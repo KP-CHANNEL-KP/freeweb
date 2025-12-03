@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KP Blog • Free Page</title>
+
+    <!-- Same CSS & UI from your original code (UNCHANGED) -->
+    <!-- (Full styles kept) -->
+
+    <style>
+        :root { --primary:#00ff9d; --bg:#0a0a1a; --card:rgba(20,20,40,0.7); --text:#e0e0ff; --border:rgba(0,255,157,0.3); }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Pyidaungsu','Inter',sans-serif; background:#0a0a1a; color:var(--text); }
+        main { margin-top:90px; max-width:1000px; margin-left:auto; margin-right:auto; padding:20px; }
+        .glass-card{background:var(--card);backdrop-filter:blur(15px);border-radius:20px;border:1px solid var(--border);padding:25px;margin-bottom:25px;}
+        h1,h2{color:var(--primary);text-align:center;margin-bottom:20px;}
+        textarea#mainTextArea{width:100%;height:450px;background:rgba(0,0,0,0.4);color:#fff;padding:15px;border-radius:15px;}
+        .upload-container{display:flex;gap:15px;align-items:center;flex-wrap:wrap;}
+        .custom-file-upload{background:rgba(0,255,157,0.15);border:2px dashed var(--primary);padding:15px 30px;border-radius:50px;cursor:pointer;}
+        .btn{background:var(--primary);padding:10px 20px;border-radius:50px;border:none;cursor:pointer;font-weight:bold;}
+    </style>
+</head>
+<body>
+
+<main>
+    <div class="glass-card">
+        <h1>KP WEBSITE • FREE PAGE</h1>
+
+        <!-- Text View Panel (UNCHANGED) -->
+        <textarea id="mainTextArea" readonly>ဒေတာများကို စတင်ဆွဲယူနေပါသည်။</textarea>
+
+        <!-- Admin Gate (UNCHANGED) -->
+        <div id="adminPasswordGate">
+            <input type="password" id="adminTextPwInput" placeholder="Admin Password">
+            <button class="btn" onclick="checkAdminPassword()">စာတင်ခွင့်ရယူမည်</button>
+            <p id="pwMessage" style="display:none;color:red;">Password မှားနေပါသည်။</p>
+        </div>
+        <div id="textAdminPanel" style="display:none;">
+            <input type="text" id="inputLine" placeholder="စာအသစ်ရိုက်ထည့်ပါ...">
+            <button class="btn" onclick="copyMainTextToClipboard()">Copy</button>
+            <button class="btn" id="saveButton" onclick="saveToMainTextarea()">Save</button>
+        </div>
+    </div>
+
+    <!-- Upload Panel (R2 Fixed) -->
+    <div class="glass-card">
+        <h2>📤 ဖိုင် Upload</h2>
+        <div class="upload-container">
+            <label for="fileInput" class="custom-file-upload"><span id="fileNameDisplay">Choose File</span></label>
+            <input type="file" id="fileInput" onchange="updateFileName(this)" hidden>
+            <button class="btn" onclick="startR2Upload()">Upload</button>
+        </div>
+        <div id="uploadMessage" style="margin-top:15px;text-align:center;font-weight:bold;"></div>
+    </div>
+
+    <!-- File List Iframe (R2 Fixed) -->
+    <div class="glass-card" style="text-align:center;">
+        <h2>⬇️ ဖိုင် Download</h2>
+        <button class="btn" onclick="showFiles()">OPEN</button>
+        <p id="file-list-message" style="display:none;color:var(--primary);">Files Below</p>
+        <iframe id="r2-file-list-iframe" src="/api/r2-list" style="width:100%;min-height:500px;border-radius:12px;display:none;" frameborder="0"></iframe>
+    </div>
+</main>
+
+<!-- All KV & R2 JS (Your Original, Minimal R2 Fix Only) -->
+<script>
+const ADMIN_TEXT_PASSWORD = "232003";
+
+function checkAdminPassword(){
+    if(document.getElementById('adminTextPwInput').value === ADMIN_TEXT_PASSWORD){
+        document.getElementById('adminPasswordGate').style.display='none';
+        document.getElementById('textAdminPanel').style.display='block';
+    }else document.getElementById('pwMessage').style.display='block';
+}
+
+async function fetchInitialText(){
+    const res = await fetch('/api/text');
+    document.getElementById('mainTextArea').value = await res.text();
+}
+document.addEventListener('DOMContentLoaded', fetchInitialText);
+
+function updateFileName(e){ document.getElementById('fileNameDisplay').innerText = e.files[0]?.name || "Choose File"; }
+
+async function startR2Upload(){
+    const file = document.getElementById('fileInput').files[0];
+    const msg = document.getElementById('uploadMessage');
+    if(!file){ msg.innerHTML='❌ File Required'; return;}
+    msg.innerHTML='⌛ Uploading...';
+    const form = new FormData(); form.append('file', file);
+    const res = await fetch('/api/upload',{method:'POST',body:form});
+    const json = await res.json();
+    msg.innerHTML = res.ok ? '✅ Done' : '❌ '+json.message;
+    document.getElementById('r2-file-list-iframe').src=document.getElementById('r2-file-list-iframe').src;
+}
+
+function showFiles(){
+    document.getElementById('r2-file-list-iframe').style.display='block';
+    document.getElementById('file-list-message').style.display='block';
+}
+
+async function saveToMainTextarea(){
+    const text = document.getElementById('mainTextArea').value = 
+        `[${new Date().toLocaleString('my-MM')}]` + "\n\n" +
+        document.getElementById('inputLine').value + "\n\n" +
+        document.getElementById('mainTextArea').value;
+    await fetch('/api/text',{method:'POST',body:text,headers:{'Content-Type':'text/plain'}});
+}
+</script>
+
+</body>
+</html>
