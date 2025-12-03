@@ -1,4 +1,4 @@
-const MAIN_KEY = 'VMESS_CONTENT';
+const MAIN_KEY = 'VMESS_CONTENT'; // KV ထဲမှာ စာသားအားလုံးကို သိမ်းမယ့် Key
 
 export async function onRequestGet({ env }) {
     try {
