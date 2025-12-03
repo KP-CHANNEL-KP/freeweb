@@ -15,7 +15,7 @@ export async function onRequestPost(context) {
     }
 
     const { env } = context;
-    const arrayBuffer = await file.arrayBuffer();
+    const arrayBuffer = await file.arrayBuffer(); 
     const key = file.name; 
 
     await env.UPLOAD_BUCKET.put(key, arrayBuffer, {
