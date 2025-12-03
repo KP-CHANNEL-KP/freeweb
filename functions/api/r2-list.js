@@ -1,5 +1,19 @@
 // functions/api/r2-list.js  ← ဒီ code ကို အဟောင်းနဲ့ အစားထိုးတင်လိုက်ရုံ!!!
 
+// *** Helper function: ဖိုင်အရွယ်အစားကို Bytes မှ KB/MB/GB သို့ ပြောင်းလဲပေးသည် ***
+function formatBytes(bytes, decimals = 2) {
+    if (bytes === 0) return '0 Bytes';
+
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
+
+
 export async function onRequestGet(context) {
     const { env } = context;
 
@@ -69,12 +83,14 @@ export async function onRequestGet(context) {
                 <div class="empty">ဖိုင်တစ်ခုမှ မရှိသေးပါ ကိုဂျီ</div>
             ` : sortedObjects.map(obj => {
                 const url = `/api/r2-download/${obj.key}`;
-                const size = (obj.size / (1024*1024)).toFixed(2);
+                // *** ပြင်ဆင်လိုက်သော ဖိုင် Size တွက်ချက်ပုံ ***
+                const size = formatBytes(obj.size); 
+                
                 const date = new Date(obj.uploaded).toLocaleString('my-MM');
                 return `
                 <div class="file">
                     <div class="fname"><a href="${url}" target="_blank">${obj.key}</a></div>
-                    <div class="meta">Size: ${size} MB • ${date}</div>
+                    <div class="meta">Size: ${size} • ${date}</div>
                     <div class="actions">
                         <a href="${url}" target="_blank" class="btn dl">Download</a>
                         <button class="btn del" onclick="del('${obj.key}')">Delete</button>
