@@ -99,7 +99,7 @@ export async function onRequestGet(context) {
             }).join('')}
         </div>
 
-        <footer>© 2025 kponly.ggff.net • လူတိုင်းမြင်ရ • ငါတစ်ယောက်ပဲ ဖျက်ရ</footer>
+        <footer>© 2025 kponly.ggff.net • အားလုံးအဆင်ပြေကြမယ်လို့ • ကျနော်မျှော်လင့်ပါတယ်</footer>
     </div>
 
     <script>
