@@ -73,8 +73,8 @@ export async function onRequestGet(context) {
                 const date = new Date(obj.uploaded).toLocaleString('my-MM');
                 return `
                 <div class="file">
-                    <div class="fname"><a href="\( {url}" target="_blank"> \){obj.key}</a></div>
-                    <div class="meta">Size: \( {size} MB • \){date}</div>
+                    <div class="fname"><a href="${url}" target="_blank">${obj.key}</a></div>
+                    <div class="meta">Size: ${size} MB • ${date}</div>
                     <div class="actions">
                         <a href="${url}" target="_blank" class="btn dl">Download</a>
                         <button class="btn del" onclick="del('${obj.key}')">Delete</button>
