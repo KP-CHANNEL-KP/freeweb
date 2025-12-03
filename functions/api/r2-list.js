@@ -1,5 +1,5 @@
 // functions/api/r2-list.js
-// Delete ခလုတ်၊ Passcode Form နှင့် Local Storage ဖြင့် Passcode မှတ်သားခြင်း Logic ပါဝင်ပြီး
+// R2 list + Delete + Passcode (Account B R2 public URL အသုံးပြုသွားမယ်)
 
 export async function onRequestGet(context) {
     const { env } = context;
@@ -25,6 +25,9 @@ export async function onRequestGet(context) {
             'Access-Control-Allow-Origin': '*',
             'Cache-Control': 'no-cache',
         };
+
+        // Account B ရဲ့ R2 Public URL
+        const PUBLIC_BASE_URL = "https://pub-8f2cb3081b62492980aaa456e245c182.r2.dev";
         
         // 3. HTML Layout နှင့် Style ပြင်ဆင်ခြင်း
         let htmlContent = `
@@ -146,14 +149,15 @@ export async function onRequestGet(context) {
             htmlContent += `<p class="error-message">ဖိုင်များမရှိသေးပါ။</p>`;
         } else {
             sortedObjects.forEach(obj => {
-                const downloadUrl = `/api/r2-download/${obj.key}`; 
+                // R2 public URL နဲ့ download လင့်ခ်ဆောက်
+                const downloadUrl = PUBLIC_BASE_URL + "/" + encodeURIComponent(obj.key); 
                 const sizeMB = (obj.size / (1024 * 1024)).toFixed(2); 
 
                 htmlContent += `
                     <li class="file-item" data-key="${obj.key}">
                         <div class="file-name-row">
                             <div class="file-name">
-                                <a href="${downloadUrl}" title="${obj.key}">${obj.key}</a>
+                                <a href="${downloadUrl}" title="${obj.key}" target="_blank">${obj.key}</a>
                             </div>
                             <a href="${downloadUrl}" target="_blank" class="download-btn">Download</a>
                             
