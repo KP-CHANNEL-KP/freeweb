@@ -171,7 +171,7 @@ try {
 </div>  
   
 <script>  
-    const PASSCODE_STORAGE_KEY = '232003';  
+    const PASSCODE_STORAGE_KEY = 'adminR2Passcode';  
     const passcodeInput = document.getElementById('admin-passcode');  
 
     // 1. စာမျက်နှာဖွင့်ဖွင့်ချင်း Local Storage ကနေ Passcode ကို ပြန်ထည့်ပေးခြင်း  
